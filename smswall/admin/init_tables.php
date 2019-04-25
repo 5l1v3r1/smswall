@@ -7,6 +7,7 @@ require('../conf.inc.php');
 
 try {
     $con = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $user, $pass);
+    $con->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );//Error Handling
     // PHP < 5.3.6
     $con->exec("set names utf8");
     $con->exec("CREATE TABLE IF NOT EXISTS config_wall (
@@ -20,8 +21,8 @@ try {
         bulle INT DEFAULT 6,
         avatar BOOL,
         retweet BOOL,
-        ctime timestamp,
-        mtime timestamp,
+        ctime TIMESTAMP,
+        mtime TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         PRIMARY KEY (id),
         UNIQUE KEY id (id)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -101,6 +101,11 @@ def get_medias(data):
 
     return medias
 
+# Filtrage des caractères invalides
+re_pattern = re.compile(u'[^\u0000-\uD7FF\uE000-\uFFFF]', re.UNICODE)
+
+def filter_unicode(unicode_string):
+    return re_pattern.sub(u'\uFFFD', unicode_string)
 
 class SmsWallListener(StreamListener):
     """ A listener handles tweets are the received from the stream. """
@@ -137,7 +142,8 @@ class SmsWallListener(StreamListener):
                 # log du message dans le shell
                 app.logger.info("%s: %s", data['user']['screen_name'], data['text'])
 
-                message = data['text']
+                message = filter_unicode(data['text'])
+                
                 message_html = make_rich_links(message, links, medias)
 
                 # Enregistrement du Tweet
@@ -182,4 +188,3 @@ class SmsWallListener(StreamListener):
 
 if __name__ == "__main__":
     start_grabber()
-
